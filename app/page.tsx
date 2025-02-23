@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Mic, Square, Play } from 'lucide-react'
+import { Mic, Square, Play, Download } from 'lucide-react'
 
 export default function AudioRecorder() {
   const [isRecording, setIsRecording] = useState(false)
@@ -19,7 +19,7 @@ export default function AudioRecorder() {
       }
     }
     mediaRecorderRef.current.onstop = () => {
-      const audioBlob = new Blob(chunksRef.current, { type: 'audio/wav' })
+      const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
       const audioUrl = URL.createObjectURL(audioBlob)
       setAudioURL(audioUrl)
       chunksRef.current = []
@@ -40,6 +40,14 @@ export default function AudioRecorder() {
       const audio = new Audio(audioURL)
       audio.play()
     }
+  }
+
+  const downloadRecording = () => {
+    if (!audioURL) return
+    const a = document.createElement('a')
+    a.href = audioURL
+    a.download = 'recording.webm'
+    a.click()
   }
 
   return (
@@ -67,6 +75,13 @@ export default function AudioRecorder() {
             className='bg-green-500 hover:bg-green-600'
           >
             <Play className='mr-2 h-4 w-4' /> 再生
+          </Button>
+          <Button
+            onClick={downloadRecording}
+            disabled={!audioURL}
+            className='bg-blue-500 hover:bg-blue-600'
+          >
+            <Download className='mr-2 h-4 w-4' /> ダウンロード
           </Button>
         </div>
         <div className='text-center'>
