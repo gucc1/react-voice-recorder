@@ -14,9 +14,13 @@ export default function AudioRecorder() {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     mediaRecorderRef.current = new MediaRecorder(stream)
     mediaRecorderRef.current.ondataavailable = (event) => {
+      console.log('ondataavailable', event.data)
       if (event.data.size > 0) {
         chunksRef.current.push(event.data)
       }
+    }
+    mediaRecorderRef.current.onerror = (e) => {
+      console.error(e)
     }
     mediaRecorderRef.current.onstop = () => {
       const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' })
